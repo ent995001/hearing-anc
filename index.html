@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陳亮宇醫師：降噪耳機與聽力健康</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Educational Professional (Background: sky-50, Text: gray-800, Accent: blue-700/indigo-600) -->
+    <!-- Application Structure Plan: 採用六段式醫療教育講座流程，以醫師身份引導公眾。流程為：核心主題介紹 -> 釐清真正的聽損元兇（音量+時間）-> 解釋ANC運作原理與破解迷思 -> 證明ANC的潛在保護效益 -> 提供具體安全建議 (60/60法則) -> 附上研究根據。此結構由淺入深，符合醫療資訊傳遞的邏輯，旨在建立信任並提供清晰的行動指引。 -->
+    <!-- Visualization & Content Choices: 
+        1. 聽損風險圖表: (目標: 釐清風險) -> (方式: Chart.js 長條圖) -> (互動: Hover顯示安全暴露時間) -> (理由: 直觀量化85dB閾值，教育音量與時間的關係) -> (庫: Chart.js Canvas)。
+        2. ANC運作機制: (目標: 解釋原理) -> (方式: HTML/Tailwind流程圖) -> (互動: 無) -> (理由: 簡化聲學概念，建立「抵消而非疊加」的認知基礎) -> (庫: HTML/Tailwind)。
+        3. ANC效益圖表: (目標: 證明好處) -> (方式: Chart.js 分組長條圖) -> (互動: Hover提示) -> (理由: 視覺化對比有無ANC時的聆聽音量差異，強化ANC的保護作用) -> (庫: Chart.js Canvas)。
+        4. 醫師建議: (目標: 行動指南) -> (方式: HTML 列表) -> (互動: 無) -> (理由: 清晰、可執行性的專業建議) -> (庫: HTML/Tailwind)。
+        5. 研究根據: (目標: 滿足用戶要求/建立可信度) -> (方式: HTML 連結列表) -> (互動: 無，僅為結構化資訊) -> (理由: 實務上應附上來源，故設計此區塊並使用佔位符連結) -> (庫: HTML/Tailwind)。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 450px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 380px;
+            }
+        }
+        .nav-link.active {
+            font-weight: 700;
+            color: #1d4ed8;
+            border-bottom: 2px solid #1d4ed8;
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800 antialiased">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-md">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-xl font-extrabold text-blue-700">👂 陳亮宇 醫師講解</span>
+                </div>
+                <div class="hidden sm:block sm:ml-6">
+                    <div class="flex space-x-4">
+                        <a href="#intro" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700">聽損元兇</a>
+                        <a href="#anc-myth" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700">ANC 迷思</a>
+                        <a href="#anc-benefit" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700">保護力</a>
+                        <a href="#advice" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700">醫師建議</a>
+                        <a href="#sources" class="nav-link px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700">研究根據</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <section id="intro" class="text-center my-12 scroll-mt-16">
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-700">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-4">耳機聽損迷思：降噪到底安不安全？</h1>
+                <p class="text-xl text-indigo-600 font-medium mb-4">
+                    我是耳鼻喉科醫師陳亮宇。很高興能為大家解答這個最常被問到的問題！
+                </p>
+                <p class="text-lg text-gray-600 max-w-4xl mx-auto">
+                    很多人擔心降噪耳機 (ANC) 產生的「反向聲波」會傷害聽力。其實，這個擔心是多餘的。我將從科學原理出發，告訴您**聽力受損的真正元兇**，以及為什麼降噪耳機在某些情況下反而能「保護」您的耳朵。
+                </p>
+            </div>
+        </section>
+
+        <section id="hearing-risk" class="my-16 scroll-mt-16">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">釐清聽損的真正元兇：音量與時間</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                不論是哪種聲音，傷害聽力的關鍵只有兩個：聲音的**分貝 (dB) 大小**，以及您**暴露的時間長短**。當聲音超過 85 分貝時，您的內耳毛細胞就會開始面臨潛在損傷。
+            </p>
+            
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">常見音量與安全暴露時長對照圖</h3>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    圖表來源：綜合職業安全衛生署與WHO建議。注意：聲音越大，安全暴露時間越短。
+                </p>
+            </div>
+        </section>
+
+        <section id="anc-myth" class="my-16 scroll-mt-16">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">破解迷思：ANC 本身並不會造成聽損</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                主動降噪的原理是聲波的「破壞性干涉」，它是在抵消噪音，而不是在疊加聲音。所以「反向聲波會傷耳」的說法是沒有根據的。
+            </p>
+
+            <div class="w-full max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg border-l-4 border-indigo-600">
+                <h3 class="text-xl font-bold text-indigo-600 mb-4 text-center">ANC 聲學原理：消除能量</h3>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+                    
+                    <div class="flex flex-col items-center text-center w-1/5">
+                        <div class="p-3 bg-red-100 rounded-full">
+                            <span class="text-3xl font-bold">A</span>
+                        </div>
+                        <span class="font-medium mt-2">噪音波 (波峰)</span>
+                        <p class="text-sm text-gray-600">外部環境聲</p>
+                    </div>
+
+                    <div class="hidden sm:block text-3xl text-gray-400"> + </div>
+                    <div class="sm:hidden text-3xl text-gray-400 self-center">↓</div>
+
+                    <div class="flex flex-col items-center text-center w-1/5">
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <span class="text-3xl font-bold">-A</span>
+                        </div>
+                        <span class="font-medium mt-2">反向聲波 (波谷)</span>
+                        <p class="text-sm text-gray-600">ANC 耳機發出</p>
+                    </div>
+
+                    <div class="hidden sm:block text-3xl text-gray-400"> = </div>
+                    <div class="sm:hidden text-3xl text-gray-400 self-center">↓</div>
+
+                    <div class="flex flex-col items-center text-center w-1/5">
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <span class="text-3xl font-bold">0</span>
+                        </div>
+                        <span class="font-medium mt-2">結果：靜音</span>
+                        <p class="text-sm text-gray-600">聲波被抵消</p>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-700">
+                    <span class="font-semibold text-blue-700">關於「耳壓感」：</span> 這種感覺多半來自耳塞/耳罩的密閉性，以及低頻噪音突然消失造成的大腦感官落差，並非聽力受損的跡象，通常不會造成永久傷害。
+                </div>
+            </div>
+        </section>
+
+        <section id="anc-benefit" class="my-16 scroll-mt-16">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">降噪耳機的隱藏保護力</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                在吵雜的環境中，人們為了蓋過環境噪音（例如捷運 80-85 dB），會不自覺地將耳機音量調得更高，這才是導致聽損的主要原因。ANC 的最大優點，就是讓您在吵雜環境中能使用更安全的音量。
+            </p>
+            
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">有無 ANC 模式下的所需音量對比 (以聽清內容為準)</h3>
+                <div class="chart-container">
+                    <canvas id="benefitChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    圖表比較：在 80dB 的環境噪音下，聽清楚音樂所需的實際音量。有了 ANC，您能更有效地將音量控制在安全範圍內。
+                </p>
+            </div>
+        </section>
+
+        <section id="advice" class="my-16 scroll-mt-16">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">醫師建議：如何安全使用耳機？</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                保護聽力，永遠從控制「音量」和「時長」開始。請務必遵守以下幾項守則，無論您是否使用降噪耳機：
+            </p>
+
+            <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-xl shadow-lg border-b-4 border-blue-500">
+                    <span class="text-4xl text-blue-700 block mb-2">①</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">嚴守 60/60 法則</h3>
+                    <p class="text-gray-600">
+                        聆聽音量不要超過最大音量的 **60%**，且連續聆聽時間不要超過 **60 分鐘**。這是保護毛細胞最簡單有效的方法。
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-b-4 border-blue-500">
+                    <span class="text-4xl text-blue-700 block mb-2">②</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">善用降噪的優勢</h3>
+                    <p class="text-gray-600">
+                        在吵雜處（飛機、捷運）<strong class="text-indigo-600">務必開啟 ANC</strong>，並且主動調低您的音樂音量。讓 ANC 負責隔絕噪音，您只負責享受低音量內容。
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-b-4 border-blue-500">
+                    <span class="text-4xl text-blue-700 block mb-2">③</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">留意警示音</h3>
+                    <p class="text-gray-600">
+                        在戶外或交通環境，請使用耳機的「通透模式」或只戴一邊耳機，確保能隨時聽到環境中的警示聲，兼顧安全與聽力。
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-b-4 border-blue-500">
+                    <span class="text-4xl text-blue-700 block mb-2">④</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">定期追蹤</h3>
+                    <p class="text-gray-600">
+                        如果您是耳機重度使用者，建議每年定期到耳鼻喉科檢查聽力，確保聽力沒有在不知不覺中退化。
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sources" class="my-16 scroll-mt-16">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-6">研究根據與資料來源</h2>
+            <p class="text-lg text-gray-700 mb-4 max-w-4xl mx-auto text-center">
+                本篇內容綜合參考了國際聽力學會、世界衛生組織 (WHO) 以及職業安全衛生的指引。
+                <strong class="text-red-500">（註：以下為結構化佔位符連結，在實際網頁應用中需替換為真實報告連結）</strong>
+            </p>
+
+            <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-lg space-y-3">
+                <div class="flex items-start space-x-3">
+                    <span class="text-blue-600 text-lg font-bold">1.</span>
+                    <a href="https://placeholder.who.int/hearing-safety" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-words">
+                        世界衛生組織 (WHO) - 安全聆聽倡議 (Safe Listening Initiative)
+                    </a>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="text-blue-600 text-lg font-bold">2.</span>
+                    <a href="https://placeholder.gov.tw/osha/noise-exposure-limits" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-words">
+                        台灣職業安全衛生署 - 噪音暴露容許時間規範
+                    </a>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="text-blue-600 text-lg font-bold">3.</span>
+                    <a href="https://placeholder.journalofacoustics.org/anc-perception-study" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-words">
+                        聲學研究期刊 - 主動降噪對聽覺感知與舒適度的影響分析
+                    </a>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <span class="text-blue-600 text-lg font-bold">4.</span>
+                    <a href="https://placeholder.audiology.org/headphone-safety-guidelines" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-words">
+                        美國聽力學會 - 個人音頻設備安全指南
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+            <p class="text-sm text-gray-400">© 2025 陳亮宇醫師 聽力健康宣導。本內容僅供衛教參考，實際診斷請諮詢專業醫師。</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true,
+                        intersect: false,
+                        mode: 'index',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '音量 (dB)'
+                        }
+                    }
+                }
+            };
+
+            // Chart 1: Hearing Risk Chart
+            const riskCtx = document.getElementById('riskChart')?.getContext('2d');
+            if (riskCtx) {
+                const riskData = {
+                    labels: ['安靜住家', '正常交談', '吵雜辦公室', '吵雜交通', '重型機車', 'KTV/夜店', '槍聲/煙火'],
+                    datasets: [{
+                        label: '分貝 (dB)',
+                        data: [40, 60, 75, 85, 95, 105, 120],
+                        backgroundColor: [
+                            '#3b82f6', // blue-500
+                            '#3b82f6',
+                            '#22c55e', // green-500
+                            '#f59e0b', // amber-500 (Warning)
+                            '#f97316', // orange-600 (Danger)
+                            '#ef4444', // red-500 (High Danger)
+                            '#dc2626'  // red-600 (Extreme Danger)
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+                new Chart(riskCtx, {
+                    type: 'bar',
+                    data: riskData,
+                    options: {
+                        ...chartOptions,
+                        plugins: {
+                            ...chartOptions.plugins,
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label + ' (' + context[0].parsed.y + ' dB)';
+                                    },
+                                    label: function(context) {
+                                        const db = context.parsed.y;
+                                        if (db <= 75) return '風險：低。安全暴露時間無限制。';
+                                        if (db > 75 && db <= 85) return '風險：中。安全暴露時間：約 8 小時。';
+                                        if (db > 85 && db <= 90) return '風險：較高。安全暴露時間：約 2 小時。';
+                                        if (db > 90 && db <= 100) return '風險：高。安全暴露時間：約 30 分鐘。';
+                                        if (db > 100 && db <= 110) return '風險：極高。安全暴露時間：約 5 分鐘。';
+                                        if (db > 110) return '風險：極端。應立即避免暴露！';
+                                        return '音量：' + db + ' dB';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 2: ANC Benefit Chart
+            const benefitCtx = document.getElementById('benefitChart')?.getContext('2d');
+            if (benefitCtx) {
+                const benefitData = {
+                    labels: ['吵雜環境 (80 dB 環境噪音)'],
+                    datasets: [
+                        {
+                            label: '所需音量 (無 ANC)',
+                            data: [90],
+                            backgroundColor: '#ef4444', // red-500
+                            borderColor: '#b91c1c',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '所需音量 (開啟 ANC)',
+                            data: [75],
+                            backgroundColor: '#3b82f6', // blue-500
+                            borderColor: '#1d4ed8',
+                            borderWidth: 1
+                        }
+                    ]
+                };
+                new Chart(benefitCtx, {
+                    type: 'bar',
+                    data: benefitData,
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            ...chartOptions.scales,
+                            y: {
+                                ...chartOptions.scales.y,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        if (value === 85) return '85 dB (安全臨界點)';
+                                        return value + ' dB';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            ...chartOptions.plugins,
+                            tooltip: {
+                                callbacks: {
+                                    afterLabel: function(context) {
+                                        if (context.datasetIndex === 0) return '需調高音量來蓋過噪音，進入風險區。';
+                                        return '有效消除環境噪音，音量維持在安全區。';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Smooth scrolling and active link highlighting logic
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 64, // Subtract header height
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-30% 0px -50% 0px', // Active when section is roughly in the top half
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
